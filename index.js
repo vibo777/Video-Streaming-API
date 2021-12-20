@@ -119,5 +119,21 @@ app.get("./videos",verifyToken,(req,res)=>{
 
 // to fetch the info a single video based on id 
 
+app.get("/videos/:id",async(req,res)=>{
+
+    let id=req.params.id;
+    let video=await videoModel.find({_id:id});
+    res.send(video);  
+})
+
+
+
+
+
+
+
+
 
 // to stream a video 
+
+// to record the time on closing player  
