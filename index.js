@@ -3,13 +3,14 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const bcryptjs = require('bcryptjs');
 const cors = require('cors');
+const fs = require('fs');
 
-
-const PORT = process.env.PORT || 3000;
 
 // import modules
 const userModel = require('./model/user-model');
 const verifyToken = require('./verify-token');
+const videoModel = require('./model/video-model');
+const userVideoModel = require('./model/user-video-model');
 
 
 // write code for mongo connection here
@@ -22,12 +23,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-
-app.listen(PORT, (req,res)=>{
-
-    console.log(`Listning on port ${PORT}`);
-
-})
 
 app.post("/register",(req,res)=>{
     
@@ -109,31 +104,65 @@ app.post("/login",(req,res)=>{
 
  
 // to fetch all videos info
+app.get("./videos",verifyToken,async(req,res)=>{
 
-app.get("./videos",verifyToken,(req,res)=>{
-
-
+    let videos = await videoModel.find();
+    res.send(videos);
 
 })
 
 
 // to fetch the info a single video based on id 
-
 app.get("/videos/:id",async(req,res)=>{
 
-    let id=req.params.id;
-    let video=await videoModel.find({_id:id});
+    let id=req.params.id; // read the id 
+    let video=await videoModel.find({_id:id});   // find one video based on id 
     res.send(video);  
 })
 
-
-
-
-
-
-
-
-
+ 
 // to stream a video 
+app.get("/stream/:videoid",async (req,res)=>{
 
+    let range =req.headers.range; 
+    if(!range){
+        res.status(400).send({message:"Range headers is required"});
+    }
+
+
+    let videoid=req.params.videoid; // read the id 
+      
+    let video=await videoModel.find({_id:videoid}); // find one video based on id 
+    const videoSize = fs.statSync(video.videoPath).size;
+    
+
+      // start byte of the chunk 
+      const start = Number(range.replace(/\D/g,""));
+
+      // end byte of chunk
+      const end = Math.min(start+10**6,videoSize-1);
+  
+      const contentlength = end - start + 1;
+  
+      let headers = {
+          "Content-Range" : `bytes ${start}-${end}/${videoSize}`,
+          "Accept-Ranges" : "bytes",
+          "Content-length" : contentlength,
+          "content-Type" : "video/mp4"
+      }
+  
+      res.writeHead(206,headers);
+  
+      let videoStream = fs.createReadStream("./video.mp4",{start,end});
+  
+      // stream that we recive we passing as response using pipe
+      videoStream.pipe(res);
+
+}) 
+app.listen(3000);
+
+
+// One end point is remaining in this project & we need to complete that 
+// this is assignment for us to complete 
 // to record the time on closing player  
+
