@@ -7,7 +7,7 @@ const fs = require('fs');
 
 // import modules
 const userModel = require('./model/user-model');
-// const verifyToken = require('./verify-token');
+const verifyToken = require('./verify-token');
 const videoModel = require('./model/video-model');
 const userVideoModel = require('./model/user-video-model');
 
@@ -80,35 +80,35 @@ app.post("/login",(req,res)=>{
         
                    jwt.sign(userCred,"secretkey",(err,token)=>{
                         if(err===null){
-                            res.send({message:"welcome user",token:token});
+                            res.send({message:"welcome user",token:token,user_id:user._id,success:true});
                         }
                    })   
                 }
                 else{
-                    res.send({message:"Password don't match"})
+                    res.send({message:"Password don't match",success:false})
                 }    
             })
 
         }  
         // if we don't found username else block executed 
         else{
-            res.send({message:"User is not found"});
+            res.send({message:"User is not found",success:false});
         }     
     })
     .catch((err)=>{
         console.log(err);
-        res.send({message:"Some problem"});
+        res.send({message:"Some problem",success:false});
     })
 })
 
  
 // to fetch all videos info
-// app.get("./videos",verifyToken,async(req,res)=>{
+app.get("./videos",verifyToken,async(req,res)=>{
 
-//     let videos = await videoModel.find();
-//     res.send(videos);
+    let videos = await videoModel.find();
+    res.send(videos);
 
-// })
+})
 
 
 // to fetch the info a single video based on id 
