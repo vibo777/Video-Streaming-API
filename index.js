@@ -5,10 +5,9 @@ const bcryptjs = require('bcryptjs');
 const cors = require('cors');
 const fs = require('fs');
 
-
 // import modules
 const userModel = require('./model/user-model');
-const verifyToken = require('./verify-token');
+// const verifyToken = require('./verify-token');
 const videoModel = require('./model/video-model');
 const userVideoModel = require('./model/user-video-model');
 
@@ -46,11 +45,11 @@ app.post("/register",(req,res)=>{
                 let userOBJ = new userModel(user);
                 userOBJ.save()
                 .then(()=>{
-                    res.send({message:"User is Registered"})
+                    res.send({message:"User is Registered",success:true})
                 })
                 .catch((err)=>{
                     console.log(err);
-                    res.send({message:"Problem in creating the user"}) 
+                    res.send({message:"Problem in creating the user",success:false}) 
                 })
        
             })
@@ -104,12 +103,12 @@ app.post("/login",(req,res)=>{
 
  
 // to fetch all videos info
-app.get("./videos",verifyToken,async(req,res)=>{
+// app.get("./videos",verifyToken,async(req,res)=>{
 
-    let videos = await videoModel.find();
-    res.send(videos);
+//     let videos = await videoModel.find();
+//     res.send(videos);
 
-})
+// })
 
 
 // to fetch the info a single video based on id 
@@ -159,7 +158,7 @@ app.get("/stream/:videoid",async (req,res)=>{
       videoStream.pipe(res);
 
 }) 
-app.listen(3000);
+app.listen(8000);
 
 
 // One end point is remaining in this project & we need to complete that 

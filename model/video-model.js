@@ -14,6 +14,6 @@ const videoSchema = new mongoose.Schema({
     videoPath: {type: String, required: true},
 },{timestamps:true});
 
-const videoModel = new mongoose.Model('video',videoSchema);
+const videoModel = new mongoose.model('video',videoSchema);
 
 module.exports = videoModel; 
