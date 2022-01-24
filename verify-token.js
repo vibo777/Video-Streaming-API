@@ -1,3 +1,5 @@
+const jwt = require('jsonwebtoken');
+
 function verifyToken(req,res,next){
 
     if(req.headers.authorization!=undefined){
@@ -19,3 +21,4 @@ function verifyToken(req,res,next){
 }
 
 module.exports = verifyToken;
+ 
