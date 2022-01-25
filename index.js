@@ -104,7 +104,7 @@ app.post("/login",(req,res)=>{
  
 // to fetch all videos info
 app.get("/videos",verifyToken,async(req,res)=>{
-
+    console.log(req);
     let videos = await videoModel.find();
     res.send(videos);
 
