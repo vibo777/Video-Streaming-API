@@ -115,6 +115,7 @@ app.get("/videos/:id",async(req,res)=>{
 
     let id=req.params.id; // read the id 
     let video=await videoModel.find({_id:id});   // find one video based on id 
+    console.log(video);
     res.send(video);  
 })
 
