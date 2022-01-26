@@ -121,7 +121,7 @@ app.get("/videos/:id",async(req,res)=>{
 
  
 // to stream a video 
-app.get("/stream/:videoid",async (req,res)=>{
+app.get("/stream/:filename",async (req,res)=>{
 
     let range =req.headers.range; 
     if(!range){
@@ -129,10 +129,8 @@ app.get("/stream/:videoid",async (req,res)=>{
     }
 
 
-    let videoid=req.params.videoid; // read the id 
-      
-    let video=await videoModel.find({_id:videoid}); // find one video based on id 
-    const videoSize = fs.statSync(video.videoPath).size;
+    let filepath = "./videos/"+req.params.filename;
+    const videoSize = fs.statSync(filepath).size;
     
 
       // start byte of the chunk 
@@ -152,7 +150,7 @@ app.get("/stream/:videoid",async (req,res)=>{
   
       res.writeHead(206,headers);
   
-      let videoStream = fs.createReadStream("./video.mp4",{start,end});
+      let videoStream = fs.createReadStream(filepath,{start,end});
   
       // stream that we recive we passing as response using pipe
       videoStream.pipe(res);
