@@ -111,12 +111,25 @@ app.get("/videos",verifyToken,async(req,res)=>{
 
 
 // to fetch the info a single video based on id 
-app.get("/videos/:id",async(req,res)=>{
+app.get("/videos/:videoid/:userid",(req,res)=>{
 
-    let id=req.params.id; // read the id 
-    let video=await videoModel.find({_id:id});   // find one video based on id 
-    console.log(video);
-    res.send(video);  
+    let video_id=req.params.videoid; // read the id 
+    let user_id=req.params.userid;
+
+    let userVideoOBJ = new userVideoModel({user:user_id,video:video_id});
+
+    userVideoOBJ.save()
+    .then(async ()=>{
+        let video=await videoModel.findOne({_id:video_id});   // find one video based on id 
+        res.send(video);
+    })
+    .catch((err)=>{
+        console.log(err);
+        res.send({message:"Something went wrong!!!"})
+    })
+     
+
+      
 })
 
  
