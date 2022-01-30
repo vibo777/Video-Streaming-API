@@ -4,7 +4,7 @@ const userVideoSchema = new mongoose.Schema({
 
     user: {type:mongoose.Schema.Types.ObjectId,ref :"users"},
     video:{type:mongoose.Schema.Types.ObjectId,ref:"videos"},
-    currentTime: {type: Number, default: 0},
+    currentTime : {type: Number, default: 0},
     status: {type:Number, enum:["playing","finished"],default:"playing"},
      
 },{timestamps:true})
